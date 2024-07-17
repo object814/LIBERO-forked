@@ -27,6 +27,13 @@ import json
 import argparse
 import numpy as np
 
+import os
+import PIL
+from PIL import Image
+import cv2
+# Define image storage path
+IMAGE_PATH = "images/"
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -51,6 +58,7 @@ if __name__ == "__main__":
     # extract demonstration list from file
     filter_key = args.filter_key
     all_filter_keys = None
+    print(args.dataset)
     f = h5py.File(args.dataset, "r")
     if filter_key is not None:
         # use the demonstrations from the filter key instead
@@ -140,6 +148,65 @@ if __name__ == "__main__":
             elif isinstance(f["data/{}/{}".format(ep, k)], h5py.Dataset):
                 key_shape = f["data/{}/{}".format(ep, k)].shape
                 print("    key: {} with shape {}".format(k, key_shape))
+        
+        # Print task instruction
+        print("task instruction: {}".format(language_instruction.strip('"')))
+        
+        # # Print actions        
+        # for i in range(f["data/{}".format(ep)].attrs["num_samples"]):
+        #     ee_states = f["data/{}/obs/ee_states".format(ep)][i]
+        #     gripper_states = f["data/{}/obs/gripper_states".format(ep)][i]
+        #     print("ee_state: {}, gripper_state: {}".format(ee_states, gripper_states))
+            
+        #     obs_img = f["data/{}/obs/agentview_rgb".format(ep)][i]
+        #     os.makedirs(IMAGE_PATH, exist_ok=True)
+        #     if i < 10:
+        #         cv2.imwrite(IMAGE_PATH + ep + "_00" + str(i) + ".png", obs_img)
+        #     elif i < 100:
+        #         cv2.imwrite(IMAGE_PATH + ep + "_0" + str(i) + ".png", obs_img)
+        #     else:
+        #         cv2.imwrite(IMAGE_PATH + ep + "_" + str(i) + ".png", obs_img)
+        #     print("Image saved to: {}".format(IMAGE_PATH + ep + "_" + str(i) + ".png"))
+        # Save observations
+        
+        
+        # # Save all observation images as individual files
+        # for i in range(f["data/{}".format(ep)].attrs["num_samples"]):
+        #     obs_img = f["data/{}/obs/agentview_rgb".format(ep)][i]
+        #     img = Image.fromarray(obs_img)
+        #     os.makedirs(IMAGE_PATH, exist_ok=True)
+        #     if i < 10:
+        #         img.save(IMAGE_PATH + ep + "_00" + str(i) + ".png")
+        #     elif i < 100:
+        #         img.save(IMAGE_PATH + ep + "_0" + str(i) + ".png")
+        #     else:
+        #         img.save(IMAGE_PATH + ep + "_" + str(i) + ".png")
+        #     print("Image saved to: {}".format(IMAGE_PATH + ep + "_" + str(i) + ".png"))
+
+        # # Create a video from the saved images
+
+        # # Get the list of image files
+        # image_files = sorted(os.listdir(IMAGE_PATH))
+
+        # # Read the first image to get the dimensions
+        # first_image = cv2.imread(IMAGE_PATH + image_files[0])
+        # height, width, _ = first_image.shape
+
+        # # Create a video writer object
+        # video_path = "video.avi"
+        # fourcc = cv2.VideoWriter_fourcc(*"XVID")
+        # video_writer = cv2.VideoWriter(video_path, fourcc, 30.0, (width, height))
+
+        # # Write each image to the video
+        # for image_file in image_files:
+        #     print(image_file)
+        #     image = cv2.imread(IMAGE_PATH + image_file)
+        #     video_writer.write(image)
+
+        # # Release the video writer
+        # video_writer.release()
+
+        # print("Video saved to: {}".format(video_path))
 
         if not args.verbose:
             break

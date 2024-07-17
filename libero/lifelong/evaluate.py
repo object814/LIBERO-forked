@@ -19,6 +19,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoModel, pipeline, AutoTokenizer, logging
 from pathlib import Path
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 from libero.libero import get_libero_path
 from libero.libero.benchmark import get_benchmark
 from libero.libero.envs import OffScreenRenderEnv, SubprocVectorEnv
